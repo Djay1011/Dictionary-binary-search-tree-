@@ -2,7 +2,69 @@
 
 Dictionary::Dictionary() : root(nullptr) {}
 
+/**void Dictionary::insert(int key, const std::string& item) {
+    // Create a new node
+    Node* newNode = new Node(key, item);
 
+    // If the tree is empty, the new node becomes the root
+    if (root == nullptr) {
+        root = newNode;
+        return;
+    }
+
+    Node* current = root;
+    Node* parent = nullptr;
+
+    while (true) {
+        parent = current;
+
+        if (key < current->key) {
+            // Go left
+            current = current->left;
+            if (current == nullptr) {
+                parent->left = newNode;
+                return;
+            }
+        }
+        else if (key > current->key) {
+            // Go right
+            current = current->right;
+            if (current == nullptr) {
+                parent->right = newNode;
+                return;
+            }
+        }
+        else {
+            // Key already exists, update the item
+            current->item = item;
+            delete newNode;  // The new node is not needed
+            return;
+        }
+    }
+}*/
+
+/***std::string* Dictionary::lookup(int key) {
+    Node* current = root;
+    while (current != nullptr) {
+        if (key == current->key) {
+            // Key found, return a pointer to the item
+            return &(current->item);
+        }
+        else if (key < current->key) {
+            // Key is less than the current key, go to the left subtree
+            current = current->left;
+        }
+        else {
+            // Key is greater than the current key, go to the right subtree
+            current = current->right;
+        }
+    }
+    // Key not found, return a null pointer
+    return nullptr;
+}**/
+
+
+// Add a key-item pair to the dictionary.
 void Dictionary::insert(int key, const std::string& item) {
     root = insertWorker(root, key, item);
 }
@@ -13,29 +75,32 @@ Dictionary::Node* Dictionary::insertWorker(Node* node, int key, const std::strin
         return new Node(key, item);
     }
 
+    //Find correct position and insert node recursively
     if (key < node->key) {
-        node->left = insertWorker(node->left, key, item);
+        node->left = insertWorker(node->left, key, item);//Insert in left subtree.
     }
     else if (key > node->key) {
-        node->right = insertWorker(node->right, key, item);
+        node->right = insertWorker(node->right, key, item);//Insert in right subtree.
     }
     else {
-        // Key already exists, update the item
+        // Update the item if the key exists.
         node->item = item;
     }
     return node;
 }
 
-
+// Method to lookup an item by its key.
 std::string* Dictionary::lookup(int key) {
-    return lookupWorker(root, key);
+    return lookupWorker(root, key);// Begin at the root for the lookup.
 }
 
+// Recursive worker for lookup
 std::string* Dictionary::lookupWorker(Node* currentNode, int key) {
     if (currentNode == nullptr) {
         return nullptr; // Key not found
     }
 
+    // Search for the key in the tree recursively.
     if (key == currentNode->key) {
         return &(currentNode->item); // Key found
     }
@@ -47,10 +112,12 @@ std::string* Dictionary::lookupWorker(Node* currentNode, int key) {
     }
 }
 
+//Display all dictionary entries.
 void Dictionary::displayEntries() {
     displayEntriesWorker(root);  // (1) Start the traversal from the root
 }
 
+// Recursive worker for displayentries
 void Dictionary::displayEntriesWorker(Node* currentNode) {
     if (currentNode == nullptr) return;
 
@@ -59,10 +126,12 @@ void Dictionary::displayEntriesWorker(Node* currentNode) {
     displayEntriesWorker(currentNode->right);  // (3) Traverse the right subtree
 }
 
+//  Visually display the structure of the tree.
 void Dictionary::displayTree() {
     displayTreeWorker(root, 0);
 }
 
+// Recursive worker to visually display the tree.
 void Dictionary::displayTreeWorker(Node* node, int depth) {
     if (node == nullptr) {
         printIndent(depth);
@@ -78,16 +147,19 @@ void Dictionary::displayTreeWorker(Node* node, int depth) {
     displayTreeWorker(node->right, depth + 1); // Traverse right subtree
 }
 
+// Method to print indentation based on node depth.
 void Dictionary::printIndent(int depth) {
     for (int i = 0; i < depth; ++i) {
         std::cout << "  "; // Two spaces for each level of depth
     }
 }
 
+// Function to delete a key-item pair from a dictionary.
 void Dictionary::remove(int key) {
     root = removeWorker(root, key);
 }
 
+// Recursive worker for remove
 Dictionary::Node* Dictionary::removeWorker(Node* node, int key) {
     if (node == nullptr) {
         return nullptr; // Key not found
@@ -180,9 +252,6 @@ Dictionary::Node* Dictionary::rotateLeft(Node* a) {
 }
 
 void Dictionary::testRotations() {
-    // Hardcoded test of rotations on specific nodes
-    // Note: This requires knowledge of the tree structure and the nodes you want to rotate
-    // For example:
     root = rotateRight(root); // Rotate right at root
     root = rotateLeft(root);  // Then rotate left at root
 
@@ -232,8 +301,8 @@ void Dictionary::removeIf(std::function<bool(int)> predicate) {
     std::vector<int> keysToRemove;
     collectKeysToRemove(root, predicate, keysToRemove);
 
-    // Now remove the nodes with the collected keys
+    // remove the nodes with the collected keys
     for (int key : keysToRemove) {
-        remove(key); // Assuming you have a 'remove(int key)' function
+        remove(key); 
     }
 }
